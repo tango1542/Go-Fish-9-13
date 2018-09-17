@@ -59,6 +59,10 @@ class Player(object):               #Creating a player class
         self.name = name
         self.hand = []
 
+    def __repr__(self):             #Makes the object able to print as a string
+        # return self.number + " of " + self.suit  The suit is not necessary for this game's purposes
+        return self
+
 
     # Draw n number of cards from a deck
 
@@ -87,6 +91,7 @@ class Player(object):               #Creating a player class
 
 
 def main():
+
     my_deck = Deck()
     my_deck.populate()
     my_deck.shuffle()
@@ -94,7 +99,7 @@ def main():
     player1 = Player("Player 1")
     player2 = Player("Computer 1")
     player3 = Player("Computer 2")
-    player1.draw(my_deck, 7)        #With this attribute, you can specify how many cards a player will be dealt
+    player1.draw(my_deck, 5)        #With this attribute, you can specify how many cards a player will be dealt
     player1.showHand()
     player2.draw(my_deck, 7)
     player2.showHand()
@@ -103,6 +108,22 @@ def main():
     player3.showHand()
     player3.showQuant()
     my_deck.showRemainingDeck()
+
+    print (player1.hand)
+    v = type(player1.hand)
+    print (v)
+    u = player1.hand[3]
+    print (u)
+    r = type(u)
+    print ("r is " + str(r))
+    # t = player1.hand.pop
+    # print (t)
+    # str1 = ''.join(player1.hand)
+    # print (str1)
+    if u in player2.hand:
+        print ("it's there")
+
+
 
     w = 0
     print("\n\nWelcome to Go Fish. Read Read Me file for instructions.")
