@@ -6,19 +6,7 @@ class Card(object):                         #Creating a Card class with the attr
     def __init__(self, number):
         self.number = str(number)
 
-    # __lt__ would sort/compare the cards
-
     def __str__(self):  # Makes the object able to print as a string
-        # if self.number in ["11", "12", "13", "14"]:
-        #     if self.number == 11:
-        #         return "J"
-        #     if self.number == 12:
-        #         return "Q"
-        #     if self.number == 13:
-        #         return "K"
-        #     if self.number == 14:
-        #         return "A"
-        # # return self.number + " of " + self.suit  The suit is not necessary for this game's purposes
         return self.number
 
     def __repr__(self):  # Makes the object able to print as a string
@@ -118,18 +106,15 @@ class Player(object):               #Creating a player class
         return self.hand.pop()
 
     def checkCard(self, guess, Player):  #This is finished and working
-        # guess = "5"
+
         guess_card = Card(guess)
 
-        # print(type(guess_card))
-        # print("guess_card above")
         posHand = []
         for i, c in enumerate(Player.hand):  # enumerate is helping to find the actual index mapping, that's why there is 2 values
             if guess_card == c:
                 posHand.append(i)
 
         z = len(posHand)
-                # print("It's there")
 
         if not posHand:
             print("\n" + Player.name + " has no " + str(guess_card) + "'s")
@@ -138,20 +123,6 @@ class Player(object):               #Creating a player class
             print("\n" + Player.name + " has " + str(z) + " x " + str(guess_card) + "'s\n")
             return True
 
-        # bosHand = []
-        # for i, c in enumerate(Player.hand):  # enumerate is helping to find the actual index mapping, that's why there is 2 values
-        #     if guess_card == c:
-        #         self.hand.append(c)
-        #         print ("c is " + str(c))
-        #         Player.hand.remove(c)
-        #         print ("The card was added to player 1's hand")
-
-        # if not bosHand:
-        #     print("nothing in the list")
-        # else:
-        #     print("Player 2 has that card")
-
-
     def getCards(self, guess, Player):  # Might not need to use this method now, as it can be part of checkCards
         guess_card = Card(guess)  # This is creating a Card object with the value currently being the hard-coded number 5
         posHand = []
@@ -159,26 +130,15 @@ class Player(object):               #Creating a player class
         for i, c in enumerate(Player.hand):  # enumerate is helping to find the actual index mapping, that's why there is 2 values
             if guess_card == c:
                 self.hand.append(c)
-                # print ("c is " + str(c))
-                # Player.hand.remove(c)
                 cards_to_remove.append(c)
-                # print("The card was added to " + self.name + "'s hand")
 
         for c in cards_to_remove:
             Player.hand.remove(c)
 
-        # if not posHand:
-        #     print("nothing in the list")
-        # else:
-        #     print("Player 2 has that card")
-
-
     def checkBook(self):  #This is finished, for a guess of 5.  Should I iterate through the whole deck?, but also need to add remove book method
 
         possibles = [Card(n) for n in Deck.NUMBERS]
-        # print(possibles)
 
-        books_to_remove = []
         books = 0
         for i in possibles:
             if self.hand.count(i) == 4:
@@ -187,13 +147,8 @@ class Player(object):               #Creating a player class
                 self.hand.remove(i)
                 self.hand.remove(i)
 
-                #     self.hand.remove(i)
-                # list(filter((i).__ne__, self.hand))
-                # print ("Player has " + str(self.books) + " books of " + str(i))
                 self.book_card.append(i)
                 self.books +=1
-        # print (self.name + " has " + str(self.books) + " books")
-        # print (self.hand)
 
     def play_round(self, other_player1, other_player2):    #This is testing a method to have other methods run
         self.showHand()
@@ -207,24 +162,12 @@ class Player(object):               #Creating a player class
         self.checkBook()
 
 
-    # def draw_card(self, deck):
-
-    def show_gameboard(self, other_player1, other_player2):
-        self.showHand()
-        other_player1.showQuant()
-        other_player2.showQuant()
-
-    # def check_end_game
-
-
-
 def main():
 
     my_deck = Deck()
     my_deck.populate()
     my_deck.shuffle()
 
-    # my_deck.printt()
     player1 = Player("Player 1","human")
     player2 = Player("Computer 1","bot")
     player3 = Player("Computer 2","bot")
@@ -234,23 +177,15 @@ def main():
 
     player3.draw(my_deck, 6)
 
-
-
     players = []
     players.append(player1)
     players.append(player2)
     players.append(player3)
-    # print (str(players))
-    # player1.showQuant()
-    # player2.showQuant()
-
-
 
     def showGameboard():
         player1.display_score()
-        player2.display_score()
-        player3.display_score()
-
+        player2.display_comp()
+        player3.display_comp()
 
     def check_end_game():
         x = int(player1.books)
@@ -266,14 +201,9 @@ def main():
 
             raise SystemExit
 
-
-
     rand_card = [Card(n) for n in Deck.NUMBERS]
 
-
     t = 0  #This sets the index position to dicate who's turn it is
-
-
 
     while True:  # This changes the player
 
@@ -302,9 +232,7 @@ def main():
 
                     if player2.checkCard(f, player_select) == True:
                         player2.getCards(f, player_select)
-                        # player1.display_score()
-                        # player2.display_comp()
-                        # player3.display_comp()
+
                     else:
                         if my_deck:
                             player2.go_fish(my_deck)
@@ -337,13 +265,9 @@ def main():
                         f = (str(d))
                         print("\n" + str(players[2]) + " asking for a " + str(d) + " from " + str(player_select))
 
-
-
                     if player3.checkCard(f, player_select) == True:
                         player3.getCards(f, player_select)
-                        # player1.display_score()
-                        # player2.display_comp()
-                        # player3.display_comp()
+
                     else:
                         if my_deck:
                             player3.go_fish(my_deck)
@@ -361,9 +285,6 @@ def main():
                             if t == 3:
                                 t = 0
                             play_again = False
-
-
-
 
         else:  # this is for the human player
             play_again = True  # When I want to break the loop and end their turn, set this to False
@@ -395,18 +316,6 @@ def main():
                             t += 1
                             play_again = False
 
-                    # if False:
-                    #     player1.getCards(cardChoice, player2)
-                    #     player1.showHand()
-                    #     player2.showHand()
-                    #     player3.showHand()
-                    # if True:
-                    # # if False:
-                    #     player1.showHand
-                    #     print ("Nope, no cards, go fish")
-                    #     player1.go_fish(my_deck)
-                    #     player1.showHand
-
                 if choice == 2:
                     if player1.checkCard(cardChoice, player3) == True:
                         player1.getCards(cardChoice, player3)
@@ -424,136 +333,7 @@ def main():
                             t += 1
                             play_again = False
 
-
-
-
-                # x = int(input("number"))
-                # if x == 3:
-                #     t += 1
-                #     player1.go_fish(my_deck)
-                #     player1.showHand()
             pass
-
-        # After I do the game play, make a check, I would do a break to end the game, then write the actions I wanted outside of the loop to show the end of the game
-
-        # if player_turn == players[0]:
-        #     while True:
-        #         print("1: Computer1 has " + (str(len(player2.hand))) + " cards  2: Computer 2 has " + (
-        #             str(len(player2.hand))) + " cards")
-        #         print ("Hiyeee")
-        #         choice = int(input("Please select an opponent to select a card from \n"))
-        #         cardChoice = input("Which card do you want to ask for? \n")
-        #         if choice == 1:
-        #             player1.checkCard(cardChoice, player2)
-        #             if True:
-        #                 player1.getCards(cardChoice, player2)
-        #         player1.play_round(player2, player3)
-        #         x = int(input("number"))
-        #         if x == 3:
-        #             t += 1
-        #             player1.go_fish(my_deck)
-        #             player1.showHand()
-        #             break
-        #
-        # b = 0
-        # if player_turn == players[1]:
-        #     while True:
-        #         player_random = [players[0], players[2]]
-        #         player_select = random.choice(player_random)
-        #         print("Asking cards from " + str(player_select))
-        #         # player1.show_gameboard(player2, player3)
-        #         player1.showHand()
-        #         player2.showHand()
-        #         player3.showHand()
-        #         d = (random.choice(player2.hand))  # This is a random card from player 2's hand
-        #         print(d)
-        #         print("Above is d, which is the card randomly selected from the current guessers hand")
-        #         # print (type(d))
-        #         f = (str(
-        #             d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
-        #         # print (type(f))
-        #         # print ("f type is above")
-        #         # print ("Above is random choice card")
-        #         print(player_select)
-        #         print("Above is player_select, which is the randomized target of computer 1's guess")
-        #
-        #         # print(type(player_select))
-        #         # print ("Above is the player that has been selected")
-        #         player2.checkCard(f, player_select)
-        #         if True:
-        #             player2.getCards(f, player_select)
-        #             player1.showHand()
-        #             player2.showHand()
-        #             player3.showHand()
-        #             break
-        #         else:
-        #             break
-        #
-        # if player_turn == players[2]:
-        #     while True:
-        #         player_random = [players[0], players[1]]
-        #         player_select = random.choice(player_random)
-        #         print("Asking cards from " + str(player_select))
-        #         # player1.show_gameboard(player2, player3)
-        #         player1.showHand()
-        #         player2.showHand()
-        #         player3.showHand()
-        #         d = (random.choice(player3.hand))  # This is a random card from player 2's hand
-        #         print(d)
-        #         print("Above is d, which is the card randomly selected from the current guessers hand")
-        #         # print (type(d))
-        #         f = (str(
-        #             d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
-        #         print(player_select)
-        #         print("Above is player_select, which is the randomized target of computer 1's guess")
-        #         player3.checkCard(f, player_select)
-        #         if True:
-        #             player3.getCards(f, player_select)
-        #             player1.showHand()
-        #             player2.showHand()
-        #             player3.showHand()
-        #             break
-        #         else:
-        #             break
-                # player1.showHand()
-                # player2.showHand()
-                # player3.showHand()
-                # break
-
-                # print (player_select)  #This is the chosen player
-                # print(random.choice(player_select.hand))  #This is a random card from the chosen player
-                # player_select.showHand()
-                # q = player_select.hand
-                # print (q)
-                # print ("Above is q")
-                # e = len(q)
-                # print (e)
-                # print ("e is above")
-                # r = randint(0,e - 1)
-                # print (r)
-                # print("r is above")
-                # t = player_select.hand[r]
-                # print (t)
-                # print("t is above")
-
-
-                # print("1: Computer1 has " + (str(len(player2.hand))) + " cards  2: Computer 2 has " + (str(len(player2.hand))) + " cards")
-                # choice = int(input("Please select an opponent to select a card from \n"))
-                # cardChoice = input("Which card do you want to ask for? \n")
-                # if choice == 1:
-                #     player1.checkCard(cardChoice, player2)
-                # player1.play_round(player2, player3)
-                # x = int(input("number"))
-                # if x == 3:
-                #     t +=1
-
-
-    #method calls running from here
-    # player1.checkCard("5", player2)
-    # player1.getCards("5", player2)
-    # player1.checkBook()
-    # player1.showHand()
-    # player2.showHand()
 
 main()
 
