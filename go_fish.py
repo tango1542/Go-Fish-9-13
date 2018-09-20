@@ -9,16 +9,16 @@ class Card(object):                         #Creating a Card class with the attr
     # __lt__ would sort/compare the cards
 
     def __str__(self):  # Makes the object able to print as a string
-        if self.number in ["11", "12", "13", "14"]:
-            if self.number == 11:
-                return "J"
-            if self.number == 12:
-                return "Q"
-            if self.number == 13:
-                return "K"
-            if self.number == 14:
-                return "A"
-        # return self.number + " of " + self.suit  The suit is not necessary for this game's purposes
+        # if self.number in ["11", "12", "13", "14"]:
+        #     if self.number == 11:
+        #         return "J"
+        #     if self.number == 12:
+        #         return "Q"
+        #     if self.number == 13:
+        #         return "K"
+        #     if self.number == 14:
+        #         return "A"
+        # # return self.number + " of " + self.suit  The suit is not necessary for this game's purposes
         return self.number
 
     def __repr__(self):  # Makes the object able to print as a string
@@ -178,14 +178,20 @@ class Player(object):               #Creating a player class
         possibles = [Card(n) for n in Deck.NUMBERS]
         # print(possibles)
 
+        books_to_remove = []
         books = 0
         for i in possibles:
             if self.hand.count(i) == 4:
-                for num in range(4):
-                    self.hand.remove(i)
-                self.books += 1
+                self.hand.remove(i)
+                self.hand.remove(i)
+                self.hand.remove(i)
+                self.hand.remove(i)
+
+                #     self.hand.remove(i)
+                # list(filter((i).__ne__, self.hand))
                 # print ("Player has " + str(self.books) + " books of " + str(i))
                 self.book_card.append(i)
+                self.books +=1
         # print (self.name + " has " + str(self.books) + " books")
         # print (self.hand)
 
@@ -196,7 +202,10 @@ class Player(object):               #Creating a player class
 
     def go_fish(self, deck):
         print ("Go Fish!")
+        print (str(len(deck)) + " cards remaining in the deck")
         self.draw(deck, 1)
+        self.checkBook()
+
 
     # def draw_card(self, deck):
 
@@ -205,6 +214,7 @@ class Player(object):               #Creating a player class
         other_player1.showQuant()
         other_player2.showQuant()
 
+    # def check_end_game
 
 
 
@@ -213,6 +223,7 @@ def main():
     my_deck = Deck()
     my_deck.populate()
     my_deck.shuffle()
+
     # my_deck.printt()
     player1 = Player("Player 1","human")
     player2 = Player("Computer 1","bot")
@@ -233,22 +244,40 @@ def main():
     # player1.showQuant()
     # player2.showQuant()
 
+
+
     def showGameboard():
         player1.display_score()
-        player2.display_comp()
-        player3.display_comp()
+        player2.display_score()
+        player3.display_score()
+
+
+    def check_end_game():
+        x = int(player1.books)
+        y = int(player2.books)
+        z = int(player3.books)
+        r = [x,y,z]
+        all = (x + y + z)
+        if all == 13:
+            print ("GAME OVER")
+            print("Player 1 has " + str(x) + " books.")
+            print("Computer 1 has " + str(y) + " books.")
+            print("Computer 2 has " + str(z) + " books.")
+
+            raise SystemExit
+
+
+
+    rand_card = [Card(n) for n in Deck.NUMBERS]
+
+
     t = 0  #This sets the index position to dicate who's turn it is
 
-    # print(player_turn)
-    # print("Player on deck above")
-    # t += 1
-    # player_turn = players[t]
-    # print(player_turn)
-    # print("Player on deck above")
+
 
     while True:  # This changes the player
-        player_turn = players[t]
 
+        player_turn = players[t]
         print("\nIt is " + str(player_turn) + "'s turn\n")
         # showGameboard()
 
@@ -256,12 +285,20 @@ def main():
             play_again = True
             while play_again:
                 if player_turn == players[1]:
+                    player2.checkBook()
+                    check_end_game()
                     showGameboard()
                     player_random = [players[0], players[2]]  #Puts the other two oppenents into a list
                     player_select = random.choice(player_random)  #Chooses a random oponent that is not current player
-                    d = (random.choice(player2.hand))  # This is a random card from player 2 (current player's) hand
-                    f = (str(d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
-                    print("\n" + str(players[1]) + " asking for a " + str(d) + " from " + str(player_select))
+                    if player2.hand:
+                        d = (random.choice(player2.hand))  # This is a random card from player 2 (current player's) hand
+                        f = (str(d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
+                        print("\n" + str(players[1]) + " asking for a " + str(d) + " from " + str(player_select))
+                    else:
+                        d = random.choice(rand_card)
+                        f = (str(d))
+                        print("\n" + str(players[1]) + " asking for a " + str(d) + " from " + str(player_select))
+
 
                     if player2.checkCard(f, player_select) == True:
                         player2.getCards(f, player_select)
@@ -269,18 +306,36 @@ def main():
                         # player2.display_comp()
                         # player3.display_comp()
                     else:
-                        player2.go_fish(my_deck)
-                        t += 1
-                        if t == 3:
-                            t = 0
-                        play_again = False
+                        if my_deck:
+                            player2.go_fish(my_deck)
+                            t += 1
+                            if t == 3:
+                                t = 0
+                            play_again = False
+
+                        elif not my_deck and not player2.hand:
+                            t += 1
+                            play_again = False
+
+                        else:
+                            t += 1
+                            if t == 3:
+                                t = 0
+                            play_again = False
                 elif player_turn == players[2]:
+                    player3.checkBook()
+                    check_end_game()
                     showGameboard()
                     player_random = [players[0], players[1]]  #Puts the other two oppenents into a list
                     player_select = random.choice(player_random)  #Chooses a random oponent that is not current player
-                    d = (random.choice(player3.hand))  # This is a random card from player 2 (current player's) hand
-                    f = (str(d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
-                    print("\n" + str(players[2]) + " asking for a " + str(d) + " from " + str(player_select))
+                    if player3.hand:
+                        d = (random.choice(player3.hand))  # This is a random card from player 2 (current player's) hand
+                        f = (str(d))  # Turns the card object into a string, so it can then be passed to the function to be turned back into a card
+                        print("\n" + str(players[2]) + " asking for a " + str(d) + " from " + str(player_select))
+                    else:
+                        d = random.choice(rand_card)
+                        f = (str(d))
+                        print("\n" + str(players[2]) + " asking for a " + str(d) + " from " + str(player_select))
 
 
 
@@ -290,18 +345,32 @@ def main():
                         # player2.display_comp()
                         # player3.display_comp()
                     else:
-                        player3.go_fish(my_deck)
-                        t += 1
-                        if t == 3:
-                            t = 0
-                        play_again = False
+                        if my_deck:
+                            player3.go_fish(my_deck)
+                            t += 1
+                            if t == 3:
+                                t = 0
+                            play_again = False
+
+                        elif not my_deck and not player3.hand:
+                            t += 1
+                            play_again = False
+
+                        else:
+                            t += 1
+                            if t == 3:
+                                t = 0
+                            play_again = False
+
+
 
 
         else:  # this is for the human player
             play_again = True  # When I want to break the loop and end their turn, set this to False
             while play_again:
-                showGameboard()
                 player1.checkBook()
+                check_end_game()
+                showGameboard()
                 print("\nPlease select an opponent to select a card from")
                 choice = int(input("1: Computer1  2: Computer 2\n"))
                 cardChoice = input("Which card do you want to ask for? \n")
@@ -311,10 +380,20 @@ def main():
                         player1.getCards(cardChoice, player2)
 
                     else:
-                        player1.go_fish(my_deck)
-                        player1.display_score()
-                        t += 1
-                        play_again = False
+                        if my_deck:
+                            player1.go_fish(my_deck)
+                            player1.display_score()
+                            t += 1
+                            play_again = False
+
+                        elif not my_deck and not player1.hand:
+                            t += 1
+                            play_again = False
+
+                        else:
+                            player1.display_score()
+                            t += 1
+                            play_again = False
 
                     # if False:
                     #     player1.getCards(cardChoice, player2)
@@ -335,10 +414,15 @@ def main():
                         # player2.showHand()
                         # player3.showHand()
                     else:
-                        player1.go_fish(my_deck)
-                        player1.display_score()
-                        t += 1
-                        play_again = False
+                        if my_deck:
+                            player1.go_fish(my_deck)
+                            player1.display_score()
+                            t += 1
+                            play_again = False
+                        else:
+                            player1.display_score()
+                            t += 1
+                            play_again = False
 
 
 
