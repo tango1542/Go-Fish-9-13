@@ -2,6 +2,7 @@ from random import shuffle
 import random
 from random import randint
 
+
 class Card(object):                         #Creating a Card class with the attribures of suits and numbers
     def __init__(self, number):
         self.number = str(number)
@@ -67,7 +68,7 @@ class Player(object):               #Creating a player class
         self.name = name
         self.hand = []
         self.books = 0
-        self.book_card = []
+        self.book_card = []  #Not using this, but this would list the cards of books that you have made
         self.species = species
 
     def __repr__(self):             #Makes the object able to print as a string
@@ -95,26 +96,26 @@ class Player(object):               #Creating a player class
         print ("  {}:  cards: {}  books: {}  cards {}".format(self.name, len(self.hand), self.books, self.hand))
         return self
 
-    def display_comp(self):
+    def display_comp(self):    #Displays the computer player's info, so you can't actually see what cards they have
         print ("{}:  cards: {}  books: {}".format(self.name, len(self.hand), self.books))
         return self
 
-    def showQuant(self):            # Shows the quantity of cards in an opponents hand.  In real game play, it wouldn't display the opponents actual cards
-        print ("{}'s hand: {}".format(self.name, len(self.hand)) + " cards")
+    # def showQuant(self):            # Shows the quantity of cards in an opponents hand.  In real game play, it wouldn't display the opponents actual cards
+    #     print ("{}'s hand: {}".format(self.name, len(self.hand)) + " cards")
 
-    def discard(self):              #This method gets rid of the card in the player's hand
-        return self.hand.pop()
+    # def discard(self):              #This method gets rid of the card in the player's hand
+    #     return self.hand.pop()
 
     def checkCard(self, guess, Player):  #This is finished and working
 
-        guess_card = Card(guess)
+        guess_card = Card(guess)  #Turning into card object
 
         posHand = []
         for i, c in enumerate(Player.hand):  # enumerate is helping to find the actual index mapping, that's why there is 2 values
             if guess_card == c:
                 posHand.append(i)
 
-        z = len(posHand)
+        z = len(posHand)  #Just using for diagnosis
 
         if not posHand:
             print("\n" + Player.name + " has no " + str(guess_card) + "'s")
@@ -126,13 +127,13 @@ class Player(object):               #Creating a player class
     def getCards(self, guess, Player):  # Might not need to use this method now, as it can be part of checkCards
         guess_card = Card(guess)  # This is creating a Card object with the value currently being the hard-coded number 5
         posHand = []
-        cards_to_remove = []
+        cards_to_remove = []   #Making a temp list so cards can be removed from the hand
         for i, c in enumerate(Player.hand):  # enumerate is helping to find the actual index mapping, that's why there is 2 values
             if guess_card == c:
                 self.hand.append(c)
-                cards_to_remove.append(c)
+                cards_to_remove.append(c)    #The selected cards are added to the cards_to_remove temp list
 
-        for c in cards_to_remove:
+        for c in cards_to_remove:   #The cards are removed from the selected player's hand
             Player.hand.remove(c)
 
     def checkBook(self):  #This is finished, for a guess of 5.  Should I iterate through the whole deck?, but also need to add remove book method
@@ -150,15 +151,15 @@ class Player(object):               #Creating a player class
                 self.book_card.append(i)
                 self.books +=1
 
-    def play_round(self, other_player1, other_player2):    #This is testing a method to have other methods run
-        self.showHand()
-        other_player1.showQuant()
-        other_player2.showQuant()
+    # def play_round(self, other_player1, other_player2):    #This is testing a method to have other methods run
+    #     self.showHand()
+    #     other_player1.showQuant()
+    #     other_player2.showQuant()
 
     def go_fish(self, deck):
         print ("Go Fish!")
         print (str(len(deck)) + " cards remaining in the deck")
-        self.draw(deck, 1)
+        self.draw(deck, 1)  #Draws one card from the deck
         self.checkBook()
 
 
@@ -187,13 +188,18 @@ def main():
         player2.display_comp()
         player3.display_comp()
 
-    def check_end_game():
-        x = int(player1.books)
-        y = int(player2.books)
-        z = int(player3.books)
-        r = [x,y,z]
-        all = (x + y + z)
-        if all == 13:
+        # player1.display_score()
+        # player2.display_score()
+        # player3.display_score()
+
+
+    def check_end_game():  #This function checks for the end of the game, and runs after each play
+        pl1books = int(player1.books)
+        pl2books = int(player2.books)
+        pl3books = int(player3.books)
+        r = [pl1books,pl2books,pl3books]
+        allbooks = (pl1books + pl2books + pl3books)
+        if allbooks == 13:
             print ("GAME OVER")
             print("Player 1 has " + str(x) + " books.")
             print("Computer 1 has " + str(y) + " books.")
@@ -209,7 +215,6 @@ def main():
 
         player_turn = players[t]
         print("\nIt is " + str(player_turn) + "'s turn\n")
-        # showGameboard()
 
         if player_turn.species == "bot":  # while play again, that would be their turns
             play_again = True
